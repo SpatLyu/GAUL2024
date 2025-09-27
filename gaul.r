@@ -15,14 +15,20 @@ L2$size()$getInfo()
   feat = ee_as_sf(x = ee$Feature(layer$toList(1, lid-1)$get(0)), 
                   maxFeatures = 1e13) 
   if (export) sf::write_sf(feat,
-                           paste0("./data/gaul_shp/L",export_level,
+                           paste0("./data/L",export_level,
                                   "/L",export_level,"_",lid,".gpkg"),
                            overwrite = TRUE)
   return(feat)
 }
 
+purrr::map(seq_len(L0$size()$getInfo()),
+           \(.i) .get_gaul_layer(L0,.i,export_level = 0))
+
 purrr::map(seq_len(L1$size()$getInfo()),
-           \(.i) .get_gaul_layer(L1,.i))
+           \(.i) .get_gaul_layer(L1,.i,export_level = 1))
+
+purrr::map(seq_len(L2$size()$getInfo()),
+           \(.i) .get_gaul_layer(L2,.i,export_level = 2))
 
 gaul_level1 = fs::dir_ls(
   path = "./data/L1/",
